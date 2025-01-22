@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard WebGIS</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Link ke file CSS -->
+  <link rel="stylesheet" href="Style.css">
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      border: 1px solid black;
+      text-align: center;
+      padding: 8px;
+    }
+
+    thead {
+      background-color: #f1f1f1;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans">
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">POPULASI PENDUDUK KAB. SINJAI DALAM LIMA TAHUN TERAKHIR</div>
+    <div class="menu-toggle" onclick="toggleMenu()">&#9776;</div>
+    <ul class="menu">
+      <li><a href="https://hidayat-12.github.io/Dashboard_Populasi_Penduduk_KAB.SINJAI">Home</a></li>
+      <li><a href="https://hidayat-12.github.io/Populasi_Penduduk_Kab.Sinjai/">See Fullscreen Map</a></li>
+      <li><a href="https://www.instagram.com/taufikhidayat4153/">Instagram</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container mx-auto mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Peta -->
+    <div class="bg-white p-4 shadow rounded">
+      <h2 class="text-lg font-semibold mb-4">Peta Interaktif</h2>
+      <iframe src="https://hidayat-12.github.io/Populasi_Penduduk_Kab.Sinjai/" class="w-full h-80 border rounded" allowfullscreen></iframe>
+    </div>
+
+    <!-- Diagram -->
+    <div class="bg-white p-4 shadow rounded">
+      <h2 class="text-lg font-semibold mb-4">Diagram Infografis</h2>
+      <canvas id="stackedBarChart" width="800" height="400"></canvas>
+    </div>
+  </div>
+
+  <!-- Tabel -->
+  <div class="container mx-auto mt-6 bg-white p-4 shadow rounded">
+    <h2 class="text-lg font-semibold mb-4">Data Tabel</h2>
+    <div class="overflow-y-auto h-80 border rounded">
+      <table>
+        <thead>
+          <tr>
+            <th>KECAMATAN</th>
+            <th>2019</th>
+            <th>2020</th>
+            <th>2021</th>
+            <th>2022</th>
+            <th>2023</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Sinjai Barat</td>
+            <td>24.538</td>
+            <td>25.873</td>
+            <td>26.041</td>
+            <td>26.285</td>
+            <td>26.518</td>
+          </tr>
+          <tr>
+            <td>Sinjai Selatan</td>
+            <td>39.427</td>
+            <td>40.473</td>
+            <td>40.618</td>
+            <td>40.878</td>
+            <td>41.120</td>
+          </tr>
+          <tr>
+            <td>Sinjai Timur</td>
+            <td>31.199</td>
+            <td>33.765</td>
+            <td>34.099</td>
+            <td>34.470</td>
+            <td>34.862</td>
+          </tr>
+          <tr>
+            <td>Sinjai Tengah</td>
+            <td>27.410</td>
+            <td>28.337</td>
+            <td>28.436</td>
+            <td>28.616</td>
+            <td>28.783</td>
+          </tr>
+          <tr>
+            <td>Sinjai Utara</td>
+            <td>47.967</td>
+            <td>50.498</td>
+            <td>50.983</td>
+            <td>51.616</td>
+            <td>52.233</td>
+          </tr>
+          <tr>
+            <td>Bulupoddo</td>
+            <td>16.051</td>
+            <td>17.522</td>
+            <td>17.623</td>
+            <td>17.775</td>
+            <td>17.920</td>
+          </tr>
+          <tr>
+            <td>Sinjai Borong</td>
+            <td>16.185</td>
+            <td>17.718</td>
+            <td>17.816</td>
+            <td>17.964</td>
+            <td>18.106</td>
+          </tr>
+          <tr>
+            <td>Tellu Limpoe</td>
+            <td>33.711</td>
+            <td>37.724</td>
+            <td>38.204</td>
+            <td>38.588</td>
+            <td>39.064</td>
+          </tr>
+          <tr>
+            <td>Pulau Sembilan</td>
+            <td>7.637</td>
+            <td>7.568</td>
+            <td>7.546</td>
+            <td>7.635</td>
+            <td>7.676</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  </div>
+
+  <script>
+    const labels = ["2019", "2020", "2021", "2022", "2023"];
+    const dataPartai = {
+      "Sinjai Barat": [24538, 25873, 26041, 26285, 26518],
+      "Sinjai Selatan": [39427, 40473, 40618, 40878, 41120],
+      "Sinjai Timur": [31199, 33765, 34099, 34470, 34862],
+      "Sinjai Tengah": [27410, 28337, 28436, 28616, 28783],
+      "Sinjai Utara": [47967, 50498, 50983, 51616, 52233],
+      "Bulupoddo": [16051, 17522, 17623, 17775, 17920],
+      "Sinjai Borong": [16185, 17718, 17816, 17964, 18106],
+      "Tellu Limpoe": [33711, 37724, 38204, 38588, 39064],
+      "Pulau Sembilan": [7637, 7568, 7546, 7635, 7676],
+    };
+
+    const partaiColors = {
+      "Sinjai Barat": "green",
+      "Sinjai Selatan": "darkgreen",
+      "Sinjai Timur": "blue",
+      "Sinjai Tengah": "yellow",
+      "Sinjai Utara": "red",
+      "Bulupoddo": "orange",
+      "Sinjai Borong": "purple",
+      "Tellu Limpoe": "darkblue",
+      "Pulau Sembilan": "darkred",
+    };
+
+    const datasets = Object.keys(dataPartai).map(partai => ({
+      label: partai,
+      data: dataPartai[partai],
+      backgroundColor: partaiColors[partai],
+      borderColor: partaiColors[partai],
+      borderWidth: 1,
+    }));
+
+    const ctx = document.getElementById("stackedBarChart").getContext("2d");
+    const stackedBarChart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: datasets,
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "top",
+          },
+        },
+        scales: {
+          x: {
+            stacked: true,
+          },
+          y: {
+            stacked: true,
+            beginAtZero: true,
+            ticks: {
+              stepSize: 10000, // Interval antar nilai (ubah sesuai kebutuhan)
+              callback: function(value) {
+                return value.toLocaleString(); // Format angka dengan koma (ribuan)
+              },
+            },
+            suggestedMax: 60000, // Nilai maksimum sumbu Y (ubah sesuai kebutuhan)
+          },
+        },
+      },
+    });
+  </script>
+</body>
+</html>
+</body>
+</html>
